@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{user.first_name}}'s travel page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="col-sm">
+            Welcome, {{user.first_name}}!
+        </div>
+        <div class="col-sm-2">
+            <a class="btn btn-success" href="/travels/add_trip">Add Trip</a>
+        </div>
+        <div class="col-sm-2">
+            <a class="btn btn-dark" href="/logout">Log Out</a>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-sm">
+                <h3>Your Trip Schedules</h3>
+
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Description</th>
+                            <th scope="col">Travel Start Date</th>
+                            <th scope="col">Travel end Date</th>
+                            <th scope="col">Plan</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trip in my_trips %}
+                        <!-- if author_main not in book.authors.all -->
+                        {% if user in trip.users.all %}
+                        {% for trip in user.trips.all %}
+                        <tr>
+                            <th scope="row">{{trip.id}}</th>
+                            <td>
+                                <a href="/travels/view/{{trip.id}}">{{trip.name}}</a>
+                            </td>
+                            <td>{{trip.start_date}}</td>
+                            <td>{{trip.end_date}}</td>
+                            <td>{{trip.descr}}</td>
+                            <td>
+                                <a href="/travels/cancel/{{trip.id}}">Cancel</a>
+                                {% if user.id == trip.initiator.id %}
+                                |
+                                <a href="/travels/delete/{{trip.id}}">Delete</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-sm">
+                <h3>Other User's Travel Plans</h3>
+
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Travel Start Date</th>
+                            <th scope="col">Travel end Date</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trip in my_trips %}
+                        {% if user not in trip.users.all %}
+                        <tr>
+                            <th scope="row">{{trip.id}}</th>
+                            <td>
+                                <a href="/travels/view/{{trip.id}}">{{trip.name}}</a>
+                            </td>
+                            <td>{{trip.start_date}}</td>
+                            <td>{{trip.end_date}}</td>
+                            <td>
+                                <a href="/travels/join/{{trip.id}}">Join</a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
